@@ -1,0 +1,25 @@
+alerts:
+  slack_channel: null
+  slack_token: null
+  telegram_chat_id: null
+  telegram_token: null
+blockchain:
+  chain_id: 8453
+  rpc_url: https://base-mainnet.g.alchemy.com/v2/YOUR_API_KEY
+  wallet_address: '0xca63eB7BcD121FE5B0B74960D7F940f58344ABf7'
+dashboard:
+  host: 0.0.0.0
+  port: 8000
+  refresh_interval: 15
+hedging:
+  delta_threshold: 50.0
+  max_slippage: 0.5
+  rebalance_window: 30
+hyperliquid:
+  api_key: YOUR_HYPERLIQUID_API_KEY
+  api_secret: YOUR_HYPERLIQUID_API_SECRET
+  testnet: false
+risk:
+  funding_cap_apr: 12.0
+  impermanent_loss_cap: 20.0
+  max_leverage: 8.0
