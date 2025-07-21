@@ -102,7 +102,8 @@ class OnChainReader:
     def __init__(self, rpc_url: str, wallet_address: str):
         self.w3 = Web3(Web3.HTTPProvider(rpc_url))
         self.wallet_address = wallet_address
-        self.position_manager_address = "0x03a520b3c5f8d0b3a7400d6f8e0e396e0325c3d6"  # Base Uniswap V3
+        # Base Uniswap V3 Position Manager - ensure checksummed
+        self.position_manager_address = self.w3.to_checksum_address("0x03a520b3c5f8d0b3a7400d6f8e0e396e0325c3d6")
         self.last_block = 0
         self.last_refresh = 0
         
@@ -188,8 +189,11 @@ class OnChainReader:
     async def _get_token_info(self, token_address: str, tokens_owed: int) -> TokenBalance:
         """Get token information and balance."""
         try:
+            # Ensure address is checksummed
+            token_address_checksum = self.w3.to_checksum_address(token_address)
+            
             token_contract = self.w3.eth.contract(
-                address=token_address,
+                address=token_address_checksum,
                 abi=ERC20_ABI
             )
             
@@ -228,9 +232,18 @@ class OnChainReader:
     
     def _get_pool_address(self, token0: str, token1: str, fee: int) -> str:
         """Get pool address for token pair and fee tier."""
-        # This is a simplified version - in production, use Uniswap V3 factory
-        # For now, return a placeholder
-        return f"0x{'0' * 40}"
+        try:
+            # Ensure addresses are checksummed
+            token0_checksum = self.w3.to_checksum_address(token0)
+            token1_checksum = self.w3.to_checksum_address(token1)
+            
+            # This is a simplified version - in production, use Uniswap V3 factory
+            # For now, return a placeholder but with proper checksum handling
+            # In real implementation, you would use the Uniswap V3 factory to compute pool address
+            return f"0x{'0' * 40}"
+        except Exception as e:
+            print(f"Error getting pool address: {e}")
+            return f"0x{'0' * 40}"
     
     async def _get_pool_state(self, pool_address: str) -> tuple[int, int]:
         """Get current pool state (tick and sqrt price)."""
